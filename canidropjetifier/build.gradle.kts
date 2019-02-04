@@ -25,7 +25,7 @@ repositories {
 }
 
 group = "com.github.plnice"
-version = "0.1"
+version = "0.2"
 
 publishing {
     repositories {

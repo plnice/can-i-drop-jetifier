@@ -10,7 +10,7 @@ Using Gradle Plugins Portal:
 
 ```
 plugins {
-  id("com.github.plnice.canidropjetifier") version "0.1"
+  id("com.github.plnice.canidropjetifier") version "0.2"
 }
 ```
 
