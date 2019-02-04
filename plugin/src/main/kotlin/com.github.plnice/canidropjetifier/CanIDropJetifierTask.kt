@@ -44,19 +44,22 @@ class CanIDropJetifierTask : AllOpenTask() {
 
     private fun Configuration.getBlamedDependencies(): Iterable<BlamedDependency> {
         val blamedDependencies = mutableSetOf<BlamedDependency>()
-        if (isCanBeResolved) {
-            resolvedConfiguration
-                .firstLevelModuleDependencies
-                .forEach { firstLevelDependency ->
-                    if (firstLevelDependency.isOldArtifact()) {
-                        blamedDependencies.add(FirstLevelDependency(firstLevelDependency.name))
-                    } else {
-                        blamedDependencies.traverseAndAddChildren(
-                            listOf(firstLevelDependency.name),
-                            firstLevelDependency.children
-                        )
+        try {
+            if (isCanBeResolved) {
+                resolvedConfiguration
+                    .firstLevelModuleDependencies
+                    .forEach { firstLevelDependency ->
+                        if (firstLevelDependency.isOldArtifact()) {
+                            blamedDependencies.add(FirstLevelDependency(firstLevelDependency.name))
+                        } else {
+                            blamedDependencies.traverseAndAddChildren(
+                                listOf(firstLevelDependency.name),
+                                firstLevelDependency.children
+                            )
+                        }
                     }
-                }
+            }
+        } catch (ignored: Throwable) {
         }
         return blamedDependencies
     }
