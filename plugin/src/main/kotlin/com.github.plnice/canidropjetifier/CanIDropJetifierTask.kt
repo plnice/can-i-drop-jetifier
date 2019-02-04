@@ -14,7 +14,9 @@ class CanIDropJetifierTask : AllOpenTask() {
         private val OLD_MODULES_PREFIXES = listOf("android.arch", "com.android.support")
     }
 
-    private val reporter = TextCanIDropJetifierReporter()
+    var verbose: Boolean = false
+
+    private val reporter by lazy { TextCanIDropJetifierReporter(verbose) }
 
     init {
         description = "Checks whether there are any dependencies using support library instead of AndroidX artifacts."

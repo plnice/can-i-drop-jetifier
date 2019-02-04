@@ -11,10 +11,11 @@ import java.io.OutputStreamWriter
 import kotlin.math.max
 
 interface CanIDropJetifierReporter {
+    val verbose: Boolean
     fun report(project: Project, blamedDependencies: List<BlamedDependency>)
 }
 
-class TextCanIDropJetifierReporter : CanIDropJetifierReporter {
+class TextCanIDropJetifierReporter(override val verbose: Boolean) : CanIDropJetifierReporter {
 
     private val textOutput = StreamingStyledTextOutput(BufferedWriter(OutputStreamWriter(System.out)))
 
@@ -57,12 +58,14 @@ class TextCanIDropJetifierReporter : CanIDropJetifierReporter {
     private fun Map.Entry<String, List<ChildDependency>>.print() {
         val (parent, dependencies) = this
         println("* $parent")
-        dependencies.forEach {
-            val parentsWithoutFirst = it.parents.subList(1, it.parents.size)
-            parentsWithoutFirst.forEachIndexed { index: Int, parent: String ->
-                println(" ".repeat(index + 2) + "\\-- $parent")
+        if (verbose) {
+            dependencies.forEach {
+                val parentsWithoutFirst = it.parents.subList(1, it.parents.size)
+                parentsWithoutFirst.forEachIndexed { index: Int, parent: String ->
+                    println(" ".repeat(index + 2) + "\\-- $parent")
+                }
+                println(" ".repeat(parentsWithoutFirst.size + 2) + "\\-- ${it.name}")
             }
-            println(" ".repeat(parentsWithoutFirst.size + 2) + "\\-- ${it.name}")
         }
         println("")
     }
