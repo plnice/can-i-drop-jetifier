@@ -1,8 +1,8 @@
-include(":plugin", ":sample")
+include(":canidropjetifier", ":sample")
 
 pluginManagement {
     repositories {
-        maven { url = uri("plugin/build/repository") }
+        maven { url = uri("canidropjetifier/build/repository") }
         gradlePluginPortal()
     }
 }
