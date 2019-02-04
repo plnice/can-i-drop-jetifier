@@ -6,12 +6,29 @@ If you migrated to AndroidX, you probably have Jetifier tool enabled that conver
 
 ## Setup
 
-Using Gradle Plugins Portal:
+Build script snippet for plugins DSL for Gradle 2.1 and later:
 
 ```
 plugins {
-  id("com.github.plnice.canidropjetifier") version "0.2"
+  id "com.github.plnice.canidropjetifier" version "0.2"
 }
+```
+
+Build script snippet for use in older Gradle versions or where dynamic configuration is required:
+
+```
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "com.github.plnice:canidropjetifier:0.2"
+  }
+}
+
+apply plugin: "com.github.plnice.canidropjetifier"
 ```
 
 ## Usage
@@ -37,6 +54,14 @@ Cannot drop Jetifier due to following dependencies:
   \-- com.squareup.leakcanary:leakcanary-analyzer:1.6.3
    \-- com.android.support:support-annotations:28.0.0
   \-- com.android.support:support-core-utils:26.0.0
+```
+
+## Configuration
+
+```
+canIDropJetifier {
+  verbose = true // Default false, set to true to print the dependencies tree down to the old artifact
+}
 ```
 
 ## License
