@@ -7,6 +7,7 @@ import org.gradle.kotlin.dsl.*
 
 open class CanIDropJetifierPluginExtension {
     var verbose: Boolean = false
+    var analyzeOnlyAndroidModules: Boolean = true
     var configurationRegex: String = ".*RuntimeClasspath"
 }
 
@@ -17,6 +18,7 @@ class CanIDropJetifierPlugin : AllOpenPlugin<Project> {
         tasks {
             register("canIDropJetifier", CanIDropJetifierTask::class, Action {
                 verbose = extension.verbose
+                analyzeOnlyAndroidModules = extension.analyzeOnlyAndroidModules
                 configurationRegex = extension.configurationRegex
             })
         }

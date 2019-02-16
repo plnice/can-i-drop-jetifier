@@ -7,6 +7,7 @@ import org.gradle.api.tasks.TaskAction
 import com.github.plnice.canidropjetifier.BlamedDependency.ChildDependency
 import com.github.plnice.canidropjetifier.BlamedDependency.FirstLevelDependency
 import org.gradle.api.GradleException
+import org.gradle.api.Project
 
 class CanIDropJetifierTask : AllOpenTask() {
 
@@ -15,6 +16,7 @@ class CanIDropJetifierTask : AllOpenTask() {
     }
 
     var verbose: Boolean = false
+    var analyzeOnlyAndroidModules = true
     lateinit var configurationRegex: String
 
     private val reporter by lazy { TextCanIDropJetifierReporter(verbose) }
@@ -29,21 +31,32 @@ class CanIDropJetifierTask : AllOpenTask() {
     @TaskAction
     fun canIDropJetifier() {
         if (project.property("android.enableJetifier") == "true") {
-            throw GradleException("To work correctly, this task needs to be run with Jetifier turned off:" +
-                    " ./gradlew -Pandroid.enableJetifier=false canIDropJetifier")
+            throw GradleException(
+                "To work correctly, this task needs to be run with Jetifier turned off:" +
+                        " ./gradlew -Pandroid.enableJetifier=false canIDropJetifier"
+            )
         } else {
-            project.allprojects.forEach { subproject ->
-                subproject
-                    .configurations
-                    .filter { it.shouldAnalyze() }
-                    .map { it.getBlamedDependencies() }
-                    .flatten()
-                    .distinct()
-                    .let {
-                        reporter.report(subproject, it)
-                    }
-            }
+            project
+                .allprojects
+                .filter { it.shouldAnalyze() }
+                .forEach { subproject ->
+                    subproject
+                        .configurations
+                        .filter { it.shouldAnalyze() }
+                        .map { it.getBlamedDependencies() }
+                        .flatten()
+                        .distinct()
+                        .let {
+                            reporter.report(subproject, it)
+                        }
+                }
         }
+    }
+
+    private fun Project.shouldAnalyze(): Boolean = with(project.plugins) {
+        return if (analyzeOnlyAndroidModules) {
+            hasPlugin("com.android.application") || hasPlugin("com.android.library")
+        } else true
     }
 
     private fun Configuration.shouldAnalyze(): Boolean {
