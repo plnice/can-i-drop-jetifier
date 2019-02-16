@@ -31,6 +31,8 @@ buildscript {
 apply plugin: "com.github.plnice.canidropjetifier"
 ```
 
+For multi-module projects, you can apply the plugin in the top-level `build.gradle` file. It will analyze all the modules found in the project.
+
 ## Usage
 
 Jetifier tool must be temporarily disabled to make this plugin work correctly. It can be done when calling the plugin's task:
