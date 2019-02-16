@@ -61,6 +61,7 @@ Cannot drop Jetifier due to following dependencies:
 ```
 canIDropJetifier {
   verbose = true // Default false, set to true to print the dependencies tree down to the old artifact
+  configurationRegex = "*.RuntimeClasspath" // Performance optimization: checks only configurations that match provided regex
 }
 ```
 

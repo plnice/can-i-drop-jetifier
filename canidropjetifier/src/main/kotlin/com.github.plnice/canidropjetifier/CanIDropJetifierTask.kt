@@ -15,6 +15,7 @@ class CanIDropJetifierTask : AllOpenTask() {
     }
 
     var verbose: Boolean = false
+    lateinit var configurationRegex: String
 
     private val reporter by lazy { TextCanIDropJetifierReporter(verbose) }
 
@@ -34,6 +35,7 @@ class CanIDropJetifierTask : AllOpenTask() {
             project.allprojects.forEach { subproject ->
                 subproject
                     .configurations
+                    .filter { it.shouldAnalyze() }
                     .map { it.getBlamedDependencies() }
                     .flatten()
                     .distinct()
@@ -42,6 +44,10 @@ class CanIDropJetifierTask : AllOpenTask() {
                     }
             }
         }
+    }
+
+    private fun Configuration.shouldAnalyze(): Boolean {
+        return configurationRegex.toRegex() matches name
     }
 
     private fun Configuration.getBlamedDependencies(): Iterable<BlamedDependency> {
