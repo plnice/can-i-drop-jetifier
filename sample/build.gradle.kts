@@ -3,7 +3,7 @@ plugins {
     kotlin("android")
     kotlin("android.extensions")
 
-    id("com.github.plnice.canidropjetifier") version "0.2"
+    id("com.github.plnice.canidropjetifier") version "0.3"
 }
 
 android {
