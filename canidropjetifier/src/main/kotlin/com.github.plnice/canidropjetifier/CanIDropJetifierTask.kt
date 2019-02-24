@@ -8,6 +8,7 @@ import com.github.plnice.canidropjetifier.BlamedDependency.ChildDependency
 import com.github.plnice.canidropjetifier.BlamedDependency.FirstLevelDependency
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import java.util.*
 
 class CanIDropJetifierTask : AllOpenTask() {
 
@@ -73,10 +74,7 @@ class CanIDropJetifierTask : AllOpenTask() {
                         if (firstLevelDependency.isOldArtifact()) {
                             blamedDependencies.add(FirstLevelDependency(firstLevelDependency.name))
                         } else {
-                            blamedDependencies.traverseAndAddChildren(
-                                listOf(firstLevelDependency.name),
-                                firstLevelDependency.children
-                            )
+                            blamedDependencies.traverseAndAddChildren(firstLevelDependency)
                         }
                     }
             }
@@ -85,15 +83,21 @@ class CanIDropJetifierTask : AllOpenTask() {
         return blamedDependencies
     }
 
-    private fun MutableSet<BlamedDependency>.traverseAndAddChildren(
-        parents: List<String>,
-        children: Iterable<ResolvedDependency>
-    ) {
-        children.forEach { child ->
-            if (child.isOldArtifact()) {
-                add(ChildDependency(name = child.name, parents = parents))
-            } else {
-                traverseAndAddChildren(parents + child.name, child.children)
+    private data class QueueElement(val parents: List<String>, val children: Iterable<ResolvedDependency>)
+
+    private fun MutableSet<BlamedDependency>.traverseAndAddChildren(firstLevelDependency: ResolvedDependency) {
+        val queue: Queue<QueueElement> = LinkedList()
+
+        queue.offer(QueueElement(listOf(firstLevelDependency.name), firstLevelDependency.children))
+
+        while (queue.isNotEmpty()) {
+            val (parents, children) = queue.poll()
+            children.forEach { child ->
+                if (child.isOldArtifact()) {
+                    add(ChildDependency(name = child.name, parents = parents))
+                } else {
+                    queue.offer(QueueElement(parents + child.name, child.children))
+                }
             }
         }
     }
