@@ -2,7 +2,7 @@
 
 Checks whether there are any dependencies using support library instead of AndroidX artifacts.
 
-If you migrated to AndroidX, you probably have Jetifier tool enabled that converts dependencies that still depend on old artifacts to operate on AndroidX classes. Since more and more libraries are migrated to AndroidX, at some point there will be no need to have this tool enabled. This plugin can be used to identify which of the libraries you are using need to be migrated to AndroidX or bumped if the new version is already there.
+If you migrated to AndroidX, you probably have the Jetifier tool enabled that converts dependencies that still depend on old artifacts to operate on AndroidX classes. Since more and more libraries are migrated to AndroidX, at some point there will be no need to have this tool enabled. This plugin can be used to identify which of the libraries you are using need to be migrated to AndroidX or bumped if the new version is already there.
 
 ## Setup
 
@@ -35,7 +35,7 @@ For multi-module projects, you can apply the plugin in the top-level `build.grad
 
 ## Usage
 
-Jetifier tool must be temporarily disabled to make this plugin work correctly. It can be done when calling the plugin's task:
+The Jetifier tool must be temporarily disabled to make this plugin work correctly. It can be done when calling the plugin's task:
 
 ``` bash
 ./gradlew -Pandroid.enableJetifier=false canIDropJetifier
