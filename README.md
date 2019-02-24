@@ -62,9 +62,11 @@ Cannot drop Jetifier due to following dependencies:
 
 ```
 canIDropJetifier {
-  verbose = true // Default false, set to true to print the dependencies tree down to the old artifact
-  analyzeOnlyAndroidModules = false // Default true, analyze only modules that use com.android.application or com.android.library plugins
+  verbose = true // Default: false, set to true to print the dependencies tree down to the old artifact
+  analyzeOnlyAndroidModules = false // Default: true, analyze only modules that use com.android.application or com.android.library plugins
   configurationRegex = ".*RuntimeClasspath" // Performance optimization: checks only configurations that match provided regex
+  parallelMode = true // Default: false, experimental: run analysis of modules in parallel
+  parallelModePoolSize = 4 // Default: max available processors - 1, experimental: pool size for analysis in parallel
 }
 ```
 

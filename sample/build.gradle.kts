@@ -41,4 +41,5 @@ dependencies {
 
 canIDropJetifier {
     verbose = true
+    parallelMode = true
 }

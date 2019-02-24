@@ -9,6 +9,8 @@ open class CanIDropJetifierPluginExtension {
     var verbose: Boolean = false
     var analyzeOnlyAndroidModules: Boolean = true
     var configurationRegex: String = ".*RuntimeClasspath"
+    var parallelMode: Boolean = false
+    var parallelModePoolSize: Int? = null
 }
 
 class CanIDropJetifierPlugin : AllOpenPlugin<Project> {
@@ -20,6 +22,8 @@ class CanIDropJetifierPlugin : AllOpenPlugin<Project> {
                 verbose = extension.verbose
                 analyzeOnlyAndroidModules = extension.analyzeOnlyAndroidModules
                 configurationRegex = extension.configurationRegex
+                parallelMode = extension.parallelMode
+                parallelModePoolSize = extension.parallelModePoolSize
             })
         }
     }

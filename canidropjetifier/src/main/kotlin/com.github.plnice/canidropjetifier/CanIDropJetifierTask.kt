@@ -9,6 +9,8 @@ import com.github.plnice.canidropjetifier.BlamedDependency.FirstLevelDependency
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import java.util.*
+import java.util.concurrent.ForkJoinPool
+import java.util.function.Consumer
 
 class CanIDropJetifierTask : AllOpenTask() {
 
@@ -19,6 +21,8 @@ class CanIDropJetifierTask : AllOpenTask() {
     var verbose: Boolean = false
     var analyzeOnlyAndroidModules = true
     lateinit var configurationRegex: String
+    var parallelMode = false
+    var parallelModePoolSize: Int? = null
 
     private val reporter by lazy { TextCanIDropJetifierReporter(verbose) }
 
@@ -37,21 +41,31 @@ class CanIDropJetifierTask : AllOpenTask() {
                         " ./gradlew -Pandroid.enableJetifier=false canIDropJetifier"
             )
         } else {
-            project
-                .allprojects
-                .filter { it.shouldAnalyze() }
-                .forEach { subproject ->
-                    subproject
-                        .configurations
-                        .filter { it.shouldAnalyze() }
-                        .map { it.getBlamedDependencies() }
-                        .flatten()
-                        .distinct()
-                        .let {
-                            reporter.report(subproject, it)
-                        }
-                }
+            val subprojectsToAnalyze = project.allprojects.filter { it.shouldAnalyze() }
+            when {
+                parallelMode -> subprojectsToAnalyze.analyzeInParallel()
+                else -> subprojectsToAnalyze.forEach { it.doAnalyze() }
+            }
         }
+    }
+
+    private fun List<Project>.analyzeInParallel() {
+        ForkJoinPool(parallelModePoolSize ?: (Runtime.getRuntime().availableProcessors() - 1)).submit(Runnable {
+            parallelStream().forEach(Consumer { subproject ->
+                subproject.doAnalyze()
+            })
+        }).get()
+    }
+
+    private fun Project.doAnalyze() {
+        configurations
+            .filter { it.shouldAnalyze() }
+            .map { it.getBlamedDependencies() }
+            .flatten()
+            .distinct()
+            .let {
+                reporter.report(this, it)
+            }
     }
 
     private fun Project.shouldAnalyze(): Boolean = with(project.plugins) {
