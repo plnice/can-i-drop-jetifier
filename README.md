@@ -8,7 +8,7 @@ If you migrated to AndroidX, you probably have Jetifier tool enabled that conver
 
 Build script snippet for plugins DSL for Gradle 2.1 and later:
 
-```
+``` groovy
 plugins {
   id "com.github.plnice.canidropjetifier" version "0.4"
 }
@@ -16,7 +16,7 @@ plugins {
 
 Build script snippet for use in older Gradle versions or where dynamic configuration is required:
 
-```
+``` groovy
 buildscript {
   repositories {
     maven {
@@ -37,13 +37,13 @@ For multi-module projects, you can apply the plugin in the top-level `build.grad
 
 Jetifier tool must be temporarily disabled to make this plugin work correctly. It can be done when calling the plugin's task:
 
-```
+``` bash
 ./gradlew -Pandroid.enableJetifier=false canIDropJetifier
 ```
 
 Example output:
 
-```
+``` bash
 ========================================
 Project sample
 ========================================
@@ -60,7 +60,7 @@ Cannot drop Jetifier due to following dependencies:
 
 ## Configuration
 
-```
+``` groovy
 canIDropJetifier {
   verbose = true // Default: false, set to true to print the dependencies tree down to the old artifact
   analyzeOnlyAndroidModules = false // Default: true, analyze only modules that use com.android.application or com.android.library plugins
