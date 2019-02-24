@@ -10,7 +10,7 @@ Build script snippet for plugins DSL for Gradle 2.1 and later:
 
 ```
 plugins {
-  id "com.github.plnice.canidropjetifier" version "0.3"
+  id "com.github.plnice.canidropjetifier" version "0.4"
 }
 ```
 
@@ -24,7 +24,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.github.plnice:canidropjetifier:0.3"
+    classpath "com.github.plnice:canidropjetifier:0.4"
   }
 }
 
