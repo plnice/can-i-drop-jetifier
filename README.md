@@ -19,9 +19,7 @@ Build script snippet for use in older Gradle versions or where dynamic configura
 ```
 buildscript {
   repositories {
-    maven {
-      url "https://plugins.gradle.org/m2/"
-    }
+    gradlePluginPortal()
   }
   dependencies {
     classpath "com.github.plnice:canidropjetifier:0.4"
