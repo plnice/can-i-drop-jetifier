@@ -1,7 +1,7 @@
 plugins {
     `kotlin-dsl`
     `maven-publish`
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.3.20"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.3.50"
     id("com.gradle.plugin-publish") version "0.10.1"
 }
 
