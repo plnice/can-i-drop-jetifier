@@ -8,10 +8,14 @@ import kotlin.math.max
 
 interface CanIDropJetifierReporter {
     val verbose: Boolean
+    val includeModules: Boolean
     fun report(project: Project, blamedDependencies: List<BlamedDependency>)
 }
 
-class TextCanIDropJetifierReporter(override val verbose: Boolean) : CanIDropJetifierReporter {
+class TextCanIDropJetifierReporter(
+    override val verbose: Boolean,
+    override val includeModules: Boolean
+) : CanIDropJetifierReporter {
 
     override fun report(project: Project, blamedDependencies: List<BlamedDependency>) {
         println("=".repeat(max(40, 8 + project.name.length)))
@@ -25,36 +29,52 @@ class TextCanIDropJetifierReporter(override val verbose: Boolean) : CanIDropJeti
                 println("")
             }
             else -> {
-                println("Cannot drop Jetifier due to following dependencies:")
-                println("")
-
-                blamedDependencies
-                    .filterIsInstance<FirstLevelDependency>()
-                    .forEach { it.print() }
-
-                blamedDependencies
+                val moduleDependencies = blamedDependencies
                     .filterIsInstance<ChildDependency>()
                     .groupBy { it.parents.first() }
-                    .forEach { it.print() }
+                    .filter { (parent, _) -> parent is Dependency.Module }
+
+                val firstLevelDependencies = blamedDependencies
+                    .filterIsInstance<FirstLevelDependency>()
+
+                val externalDependencies = blamedDependencies
+                    .filterIsInstance<ChildDependency>()
+                    .groupBy { it.parents.first() }
+                    .filter { (parent, _) -> parent is Dependency.External }
+
+                if (includeModules && moduleDependencies.isNotEmpty()) {
+                    println("Cannot drop Jetifier due to following module dependencies:")
+                    println("")
+
+                    moduleDependencies.forEach { it.print() }
+                }
+
+                if (firstLevelDependencies.isNotEmpty() || externalDependencies.isNotEmpty()) {
+                    println("Cannot drop Jetifier due to following external dependencies:")
+                    println("")
+
+                    firstLevelDependencies.forEach { it.print() }
+                    externalDependencies.forEach { it.print() }
+                }
             }
         }
     }
 
     private fun FirstLevelDependency.print() {
-        println("* $name")
+        println("* ${dependency.name}")
         println("")
     }
 
-    private fun Map.Entry<String, List<ChildDependency>>.print() {
+    private fun Map.Entry<Dependency, List<ChildDependency>>.print() {
         val (parent, dependencies) = this
-        println("* $parent")
+        println("* ${parent.name}")
         if (verbose) {
             dependencies.forEach {
                 val parentsWithoutFirst = it.parents.subList(1, it.parents.size)
-                parentsWithoutFirst.forEachIndexed { index: Int, parent: String ->
-                    println(" ".repeat(index + 2) + "\\-- $parent")
+                parentsWithoutFirst.forEachIndexed { index: Int, parent: Dependency ->
+                    println(" ".repeat(index + 2) + "\\-- ${parent.name}")
                 }
-                println(" ".repeat(parentsWithoutFirst.size + 2) + "\\-- ${it.name}")
+                println(" ".repeat(parentsWithoutFirst.size + 2) + "\\-- ${it.dependency.name}")
             }
         }
         println("")

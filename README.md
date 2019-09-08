@@ -46,7 +46,7 @@ Example output:
 Project sample
 ========================================
 
-Cannot drop Jetifier due to following dependencies:
+Cannot drop Jetifier due to following external dependencies:
 
 * com.android.support:cardview-v7:28.0.0
 
@@ -61,6 +61,7 @@ Cannot drop Jetifier due to following dependencies:
 ``` groovy
 canIDropJetifier {
   verbose = true // Default: false, set to true to print the dependencies tree down to the old artifact
+  includeModules = false // Default: true, print out not only external (library) dependencies, but also module dependencies that use old artifacts
   analyzeOnlyAndroidModules = false // Default: true, analyze only modules that use com.android.application or com.android.library plugins
   configurationRegex = ".*RuntimeClasspath" // Performance optimization: checks only configurations that match provided regex
   parallelMode = true // Default: false, experimental: run analysis of modules in parallel

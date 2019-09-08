@@ -19,12 +19,13 @@ class CanIDropJetifierTask : AllOpenTask() {
     }
 
     var verbose: Boolean = false
+    var includeModules: Boolean = true
     var analyzeOnlyAndroidModules = true
     lateinit var configurationRegex: String
     var parallelMode = false
     var parallelModePoolSize: Int? = null
 
-    private val reporter by lazy { TextCanIDropJetifierReporter(verbose) }
+    private val reporter by lazy { TextCanIDropJetifierReporter(verbose, includeModules) }
 
     init {
         description = "Checks whether there are any dependencies using support library instead of AndroidX artifacts."
@@ -86,7 +87,7 @@ class CanIDropJetifierTask : AllOpenTask() {
                     .firstLevelModuleDependencies
                     .forEach { firstLevelDependency ->
                         if (firstLevelDependency.isOldArtifact()) {
-                            blamedDependencies.add(FirstLevelDependency(firstLevelDependency.name))
+                            blamedDependencies.add(FirstLevelDependency(firstLevelDependency.toDependency()))
                         } else {
                             blamedDependencies.traverseAndAddChildren(firstLevelDependency)
                         }
@@ -97,20 +98,20 @@ class CanIDropJetifierTask : AllOpenTask() {
         return blamedDependencies
     }
 
-    private data class QueueElement(val parents: List<String>, val children: Iterable<ResolvedDependency>)
+    private data class QueueElement(val parents: List<Dependency>, val children: Iterable<ResolvedDependency>)
 
     private fun MutableSet<BlamedDependency>.traverseAndAddChildren(firstLevelDependency: ResolvedDependency) {
         val queue: Queue<QueueElement> = LinkedList()
 
-        queue.offer(QueueElement(listOf(firstLevelDependency.name), firstLevelDependency.children))
+        queue.offer(QueueElement(listOf(firstLevelDependency.toDependency()), firstLevelDependency.children))
 
         while (queue.isNotEmpty()) {
             val (parents, children) = queue.poll()
             children.forEach { child ->
                 if (child.isOldArtifact()) {
-                    add(ChildDependency(name = child.name, parents = parents))
+                    add(ChildDependency(dependency = child.toDependency(), parents = parents))
                 } else {
-                    queue.offer(QueueElement(parents + child.name, child.children))
+                    queue.offer(QueueElement(parents + child.toDependency(), child.children))
                 }
             }
         }
@@ -118,5 +119,11 @@ class CanIDropJetifierTask : AllOpenTask() {
 
     private fun ResolvedDependency.isOldArtifact(): Boolean {
         return OLD_MODULES_PREFIXES.any { moduleGroup.startsWith(it) }
+    }
+
+    private fun ResolvedDependency.toDependency() = when {
+        configuration.endsWith("RuntimeElements") && moduleGroup == project.rootProject.name ->
+            Dependency.Module("$moduleName (module)")
+        else -> Dependency.External(name)
     }
 }
