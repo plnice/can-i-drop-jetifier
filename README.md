@@ -10,7 +10,7 @@ Build script snippet for plugins DSL for Gradle 2.1 and later:
 
 ``` groovy
 plugins {
-  id "com.github.plnice.canidropjetifier" version "0.4"
+  id "com.github.plnice.canidropjetifier" version "0.5"
 }
 ```
 
@@ -22,7 +22,7 @@ buildscript {
     gradlePluginPortal()
   }
   dependencies {
-    classpath "com.github.plnice:canidropjetifier:0.4"
+    classpath "com.github.plnice:canidropjetifier:0.5"
   }
 }
 
