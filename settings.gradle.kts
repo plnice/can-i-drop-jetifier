@@ -1,4 +1,4 @@
-include(":canidropjetifier", ":sample")
+include(":canidropjetifier", ":sample", ":sample-dependency")
 
 pluginManagement {
     repositories {

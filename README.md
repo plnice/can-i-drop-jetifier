@@ -46,6 +46,16 @@ Example output:
 Project sample
 ========================================
 
+Cannot drop Jetifier due to following module dependencies:
+
+* sample-dependency (module)
+  \-- com.android.support:cardview-v7:28.0.0
+  \-- com.squareup.leakcanary:leakcanary-android:1.6.3
+   \-- com.android.support:support-core-utils:26.0.0
+  \-- com.squareup.leakcanary:leakcanary-android:1.6.3
+   \-- com.squareup.leakcanary:leakcanary-analyzer:1.6.3
+    \-- com.android.support:support-annotations:28.0.0
+
 Cannot drop Jetifier due to following external dependencies:
 
 * com.android.support:cardview-v7:28.0.0
