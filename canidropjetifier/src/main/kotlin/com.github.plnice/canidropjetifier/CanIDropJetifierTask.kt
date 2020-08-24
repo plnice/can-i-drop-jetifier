@@ -36,7 +36,7 @@ class CanIDropJetifierTask : AllOpenTask() {
 
     @TaskAction
     fun canIDropJetifier() {
-        if (project.property("android.enableJetifier") == "true") {
+        if (project.findProperty("android.enableJetifier") == "true") {
             throw GradleException(
                 "To work correctly, this task needs to be run with Jetifier turned off:" +
                         " ./gradlew -Pandroid.enableJetifier=false canIDropJetifier"
