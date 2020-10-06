@@ -70,6 +70,7 @@ Cannot drop Jetifier due to following external dependencies:
 
 ``` groovy
 canIDropJetifier {
+  assertive = true // Default: false, set to true to about the build in case a dependency on old artifacts is found
   verbose = true // Default: false, set to true to print the dependencies tree down to the old artifact
   includeModules = false // Default: true, print out not only external (library) dependencies, but also module dependencies that use old artifacts
   analyzeOnlyAndroidModules = false // Default: true, analyze only modules that use com.android.application or com.android.library plugins

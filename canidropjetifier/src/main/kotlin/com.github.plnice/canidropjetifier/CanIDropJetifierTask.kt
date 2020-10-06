@@ -26,6 +26,7 @@ class CanIDropJetifierTask : AllOpenTask() {
     var parallelModePoolSize: Int? = null
 
     private val reporter by lazy { TextCanIDropJetifierReporter(verbose, includeModules) }
+    lateinit var enforcer: IAssertive
 
     init {
         description = "Checks whether there are any dependencies using support library instead of AndroidX artifacts."
@@ -66,7 +67,9 @@ class CanIDropJetifierTask : AllOpenTask() {
             .distinct()
             .let {
                 reporter.report(this, it)
+                enforcer.note(it)
             }
+        enforcer.assert();
     }
 
     private fun Project.shouldAnalyze(): Boolean = with(project.plugins) {

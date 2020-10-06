@@ -12,6 +12,7 @@ open class CanIDropJetifierPluginExtension {
     var configurationRegex: String = ".*RuntimeClasspath"
     var parallelMode: Boolean = false
     var parallelModePoolSize: Int? = null
+    var assertive: Boolean = false
 }
 
 class CanIDropJetifierPlugin : AllOpenPlugin<Project> {
@@ -26,6 +27,7 @@ class CanIDropJetifierPlugin : AllOpenPlugin<Project> {
                 configurationRegex = extension.configurationRegex
                 parallelMode = extension.parallelMode
                 parallelModePoolSize = extension.parallelModePoolSize
+                enforcer = if (extension.assertive) StrictAssert() else IgnoreAll()
             })
         }
     }
