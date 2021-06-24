@@ -1,7 +1,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("android.extensions")
 }
 
 android {
@@ -23,7 +22,6 @@ android {
 
 dependencies {
     implementation(fileTree("libs").matching { include("*.jar") })
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.50")
     implementation("androidx.appcompat:appcompat:1.0.2")
     implementation("androidx.core:core-ktx:1.0.1")
     implementation("androidx.constraintlayout:constraintlayout:1.1.3")
