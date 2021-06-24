@@ -8,6 +8,7 @@ import com.github.plnice.canidropjetifier.BlamedDependency.ChildDependency
 import com.github.plnice.canidropjetifier.BlamedDependency.FirstLevelDependency
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import org.gradle.api.tasks.Internal
 import java.util.*
 import java.util.concurrent.ForkJoinPool
 import java.util.function.Consumer
@@ -18,12 +19,12 @@ class CanIDropJetifierTask : AllOpenTask() {
         private val OLD_MODULES_PREFIXES = listOf("android.arch", "com.android.support")
     }
 
-    var verbose: Boolean = false
-    var includeModules: Boolean = true
-    var analyzeOnlyAndroidModules = true
-    lateinit var configurationRegex: String
-    var parallelMode = false
-    var parallelModePoolSize: Int? = null
+    @Internal var verbose: Boolean = false
+    @Internal var includeModules: Boolean = true
+    @Internal var analyzeOnlyAndroidModules = true
+    @Internal lateinit var configurationRegex: String
+    @Internal var parallelMode = false
+    @Internal var parallelModePoolSize: Int? = null
 
     private val reporter by lazy { TextCanIDropJetifierReporter(verbose, includeModules) }
 
