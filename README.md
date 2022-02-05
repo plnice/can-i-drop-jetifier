@@ -1,3 +1,7 @@
+| :exclamation:  Deprecated |
+|---------------------------|
+| This plugin is deprecated and no new versions will be provided. For checking if Jetifier can be disabled, you can switch to `checkJetifier` task provided by the Android Gradle Plugin 7.1+. |
+
 # Can I drop Jetifier?
 
 Checks whether there are any dependencies using support library instead of AndroidX artifacts.
